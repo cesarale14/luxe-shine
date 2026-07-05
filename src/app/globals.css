@@ -1,0 +1,210 @@
+/* General Sans (Fontshare) — body/UI face (design §4). Kept first so the @import
+   rule stays ahead of all other rules in the compiled stylesheet. Preconnect hints
+   for api/cdn.fontshare.com live in layout.tsx. Falls back gracefully to system-ui. */
+@import url("https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Luxe Shine design tokens — source of truth.
+ * See docs/luxe-shine/luxe-shine-design-direction.md (Appendix).
+ * next/font sets --font-fraunces and --font-plex-mono on <html>.
+ * General Sans is loaded via a <link> in layout.tsx (Fontshare).
+ */
+:root {
+  /* color */
+  --white: #ffffff;
+  --ivory: #faf7f2;
+  --sand: #efe9df;
+  --line: #e5dfd3;
+  --line-hover: #c9d3e0;
+  --navy-900: #10233f;
+  --navy-700: #1e3a5f;
+  --navy-600: #274b73;
+  --text: #1c2b42;
+  --muted: #5b6779;
+  --palm: #3f6b54;
+  --palm-tint: #e9f0eb;
+  --brass: #a98c5f;
+
+  /* type */
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-body: "General Sans", system-ui, -apple-system, "Segoe UI", Roboto,
+    sans-serif;
+  --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace,
+    SFMono-Regular, Menlo, monospace;
+
+  /* radius */
+  --radius-btn: 8px;
+  --radius-card: 12px;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-ui: 180ms;
+  --dur-reveal: 500ms;
+
+  /* layout */
+  --content-max: 1160px;
+  --section-pad-desktop: 120px;
+  --section-pad-mobile: 72px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--white);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  @media (min-width: 768px) {
+    body {
+      font-size: 18px;
+    }
+  }
+
+  ::selection {
+    background-color: var(--navy-900);
+    color: var(--ivory);
+  }
+
+  /* Visible keyboard focus is a quality floor, not an option (design §6). */
+  :focus-visible {
+    outline: 2px solid var(--navy-600);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* ---- Typography system (design §4) ---- */
+  .eyebrow {
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--muted);
+  }
+
+  .display-1 {
+    font-family: var(--font-display);
+    font-weight: 420;
+    font-size: clamp(2.125rem, 5.5vw, 4rem);
+    line-height: 1.08;
+    letter-spacing: -0.005em;
+    color: var(--navy-900);
+  }
+
+  .display-2 {
+    font-family: var(--font-display);
+    font-weight: 430;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1.14;
+    letter-spacing: -0.004em;
+    color: var(--navy-900);
+  }
+
+  .heading-3 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: clamp(1.1875rem, 2vw, 1.375rem);
+    line-height: 1.32;
+    color: var(--navy-900);
+  }
+
+  .lede {
+    font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
+    line-height: 1.55;
+    color: var(--muted);
+  }
+
+  .mono-meta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+  }
+
+  .measure {
+    max-width: 68ch;
+  }
+
+  /* Text CTA — navy underline (design §6) */
+  .link-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--navy-700);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: color var(--dur-ui) var(--ease-out);
+  }
+  .link-cta:hover {
+    color: var(--navy-600);
+  }
+
+  /* ---- Dark section context (allowed once per page, design §3) ---- */
+  .on-dark {
+    background-color: var(--navy-900);
+    color: rgba(250, 247, 242, 0.82);
+  }
+  .on-dark .display-1,
+  .on-dark .display-2,
+  .on-dark .heading-3 {
+    color: var(--ivory);
+  }
+  .on-dark .lede {
+    color: rgba(250, 247, 242, 0.72);
+  }
+  .on-dark .eyebrow {
+    color: rgba(250, 247, 242, 0.6);
+  }
+
+  /* ---- Scroll reveal (design §14): opacity + 12px translateY only ---- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity var(--dur-reveal) var(--ease-out),
+      transform var(--dur-reveal) var(--ease-out);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
