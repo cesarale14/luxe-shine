@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { SITE, NAV, SERVICES, SERVICE_AREAS, isPlaceholder } from "@/content/site";
+import Image from "next/image";
+import { SITE, NAV, SERVICE_AREAS, isPlaceholder } from "@/content/site";
 
 /*
  * Footer note (design §0.2): the full-color logo lockup does not appear on the site.
@@ -34,7 +35,16 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand + promise */}
           <div className="lg:pr-8">
-            <p className="font-display text-[1.5rem] leading-none text-ivory">Luxe Shine</p>
+            {/* Ivory wordmark for the dark footer (the navy header asset would be invisible here).
+                TODO(brand): swap to the monochrome premium house-mark logo for footer/invoices/
+                PDFs/ops surfaces once that asset exists. Do not use the old full-color logo. */}
+            <Image
+              src="/brand/luxe-shine-wordmark-ivory.png"
+              alt="Luxe Shine"
+              width={600}
+              height={137}
+              className="h-auto w-[150px]"
+            />
             <p className="mt-4 max-w-xs text-[0.9375rem] leading-relaxed text-ivory/70">
               Hotel-standard cleaning for Tampa homes and rentals. Photo-verified results,
               a published checklist, and a written 24-hour guarantee.

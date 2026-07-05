@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
@@ -30,12 +31,18 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-ivory/90 backdrop-blur supports-[backdrop-filter]:bg-ivory/75">
       <div className="mx-auto flex h-16 max-w-content items-center justify-between px-6">
-        <Link
-          href="/"
-          className="font-display text-[1.625rem] leading-none text-navy-900"
-          aria-label="Luxe Shine — home"
-        >
-          Luxe&nbsp;Shine
+        <Link href="/" aria-label="Luxe Shine — home" className="inline-flex items-center">
+          {/* Premium wordmark asset (navy on transparent). Wordmark-only in the header;
+              the house-mark logo is never used here (brand rule §0).
+              TODO(brand): replace with the final exported SVG/PNG wordmark when available. */}
+          <Image
+            src="/brand/luxe-shine-wordmark.png"
+            alt="Luxe Shine"
+            width={600}
+            height={137}
+            priority
+            className="h-auto w-[130px] md:w-[168px]"
+          />
         </Link>
 
         {/* Desktop nav */}
@@ -88,9 +95,13 @@ export function Header() {
       {open && (
         <div className="fixed inset-0 z-50 flex flex-col bg-ivory md:hidden">
           <div className="flex h-16 items-center justify-between px-6">
-            <span className="font-display text-[1.625rem] leading-none text-navy-900">
-              Luxe&nbsp;Shine
-            </span>
+            <Image
+              src="/brand/luxe-shine-wordmark.png"
+              alt="Luxe Shine"
+              width={600}
+              height={137}
+              className="h-auto w-[150px]"
+            />
             <button
               type="button"
               onClick={() => setOpen(false)}
