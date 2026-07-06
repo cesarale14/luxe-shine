@@ -21,6 +21,9 @@ export function MobileQuoteBar() {
 
   if (pathname === "/quote") return null;
 
+  // On the homepage, anchor back to the hero QuoteCard instead of routing.
+  const href = pathname === "/" ? "#quote-card" : "/quote";
+
   return (
     <div
       aria-hidden={!show}
@@ -30,7 +33,7 @@ export function MobileQuoteBar() {
       style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
     >
       <Link
-        href="/quote"
+        href={href}
         className="flex h-11 w-full items-center justify-center rounded-btn bg-ivory text-[0.9375rem] font-medium text-navy-900"
         tabIndex={show ? 0 : -1}
       >

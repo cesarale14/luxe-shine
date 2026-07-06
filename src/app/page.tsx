@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
-import { HeroAfterWipe } from "@/components/blocks/HeroAfterWipe";
+import { QuoteCard } from "@/components/quote/QuoteCard";
 import { PathPanels } from "@/components/blocks/PathPanels";
-import { HowItWorks } from "@/components/blocks/HowItWorks";
+import { VerificationReportArtifact } from "@/components/blocks/VerificationReportArtifact";
 import { ReviewsBlock } from "@/components/blocks/ReviewsBlock";
 import { FactsLine } from "@/components/blocks/FactsLine";
 import { CTABand } from "@/components/blocks/CTABand";
-import { Button } from "@/components/ui/Button";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Reveal } from "@/components/ui/Reveal";
 import { SEO } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -20,42 +21,38 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      {/* 1 — Hero: after-wipe visual + minimal text */}
-      <section className="border-b border-line bg-white">
+      {/* 1 — Hero: typographic + embedded QuoteCard (no image dependency) */}
+      <section className="border-b border-line bg-ivory">
         <Container>
-          <div className="grid items-center gap-10 py-14 lg:min-h-[86vh] lg:grid-cols-2 lg:gap-16 lg:py-0">
+          <div className="grid items-center gap-8 py-10 lg:min-h-[88vh] lg:grid-cols-2 lg:gap-16 lg:py-0">
             <div>
               <Eyebrow>Tampa, FL</Eyebrow>
               <h1 className="display-1 mt-5">Hotel-standard clean. Tampa homes and rentals.</h1>
-              <p className="lede mt-6">Premium cleaning and short-term rental turnovers.</p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Button href="/quote" size="hero">
-                  Request a Quote
-                </Button>
-                <Button href="/quote" size="hero" variant="secondary">
-                  STR Turnover Quote
-                </Button>
-              </div>
-              <p className="mono-meta mt-5">Quotes in 2 business hours.</p>
+              <p className="lede mt-5 max-w-md">
+                Premium cleaning and short-term rental turnovers.
+              </p>
             </div>
-            <div className="lg:pl-4">
-              <HeroAfterWipe />
+            <div id="quote-card" className="scroll-mt-24">
+              <QuoteCard sourcePage="home" />
             </div>
           </div>
         </Container>
       </section>
 
       {/* 2 — Path split */}
-      <Section bg="ivory">
+      <Section bg="white">
         <PathPanels />
       </Section>
 
-      {/* 3 — How it works (report card assembles) */}
-      <HowItWorks />
-
-      {/* 4 — Proof: sparse reviews + facts line + guarantee */}
+      {/* 3 — Proof: reviews + report card artifact + facts line */}
       <Section bg="ivory">
-        <ReviewsBlock />
+        <SectionHeading eyebrow="Proof" title="Standing evidence." />
+        <div className="mt-10 grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
+          <ReviewsBlock />
+          <Reveal>
+            <VerificationReportArtifact variant="hero" />
+          </Reveal>
+        </div>
         <div className="mt-12 flex flex-col items-center gap-4 border-t border-line pt-10 text-center">
           <FactsLine />
           <p className="text-[0.9375rem] text-navy-900">
@@ -65,10 +62,11 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* 5 — CTA band */}
+      {/* 4 — CTA band (button anchors to the hero card) */}
       <CTABand
         heading="Get your quote."
         sub="Flat-rate · in writing · within 2 business hours."
+        cta={{ label: "Request a Quote", href: "#quote-card" }}
       />
     </>
   );

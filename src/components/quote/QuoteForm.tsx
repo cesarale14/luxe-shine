@@ -1,61 +1,32 @@
 "use client";
 
-import { useRef, useState, type FormEvent, type ReactNode } from "react";
-import { ChevronDown, Check } from "lucide-react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Check } from "lucide-react";
 import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
+import {
+  Field,
+  NativeSelect,
+  inputClass,
+  labelClass,
+  isValidZip,
+  isValidUsMobile,
+} from "./fields";
 import { SITE, OWNER_NOTIFICATION_IMPLEMENTED } from "@/content/site";
 
 /*
- * Quote flow v2 (spec §11): Step 1 = segment (Home/Rental), Step 2 = <=6 fields that
- * morph between branches. Phone is the contact channel (no email field). Honeypot
- * anti-spam, inputs >=16px, designed success state.
+ * /quote — the 2-step flow (v2/§11), sharing field primitives with the hero QuoteCard
+ * (one source of truth). Reads prefill params from the card's "Add details" link.
  *
- * BACKEND — P0 LAUNCH BLOCKER (unchanged): placeholder submit handler, no backend.
- * TODO(launch): POST to an endpoint that fires an INSTANT owner SMS/email notification,
- *   tested end-to-end, before the 2-business-hour SLA is production-safe. If not live,
- *   change SLA copy to "same business day". See OWNER_NOTIFICATION_IMPLEMENTED.
+ * BACKEND — P0 LAUNCH BLOCKER: placeholder submit handler, no backend.
+ * TODO(launch): POST to the real endpoint with an INSTANT owner notification, tested
+ *   end-to-end, before the 2-business-hour SLA is production-safe.
  */
 
 type ServiceType = "home" | "str";
 
-const inputClass =
-  // text-base = 16px so iOS never auto-zooms the field.
-  "w-full rounded-btn border border-line bg-white px-4 py-3 text-base text-navy-900 placeholder:text-muted/60 transition-colors focus:border-navy-600 focus:outline-none focus:ring-2 focus:ring-navy-600/20";
-const labelClass = "mb-1.5 block text-[0.8125rem] font-medium text-navy-900";
-
 const SERVICE_OPTIONS = ["Signature Clean (recurring)", "Deep Clean", "Move-In / Out"];
 const UNIT_TYPE_OPTIONS = ["Studio", "1BR", "2BR", "3BR+"];
-
-const phoneRe = /^[+(]?[\d][\d\s().-]{6,}$/;
-
-function Field({
-  label,
-  htmlFor,
-  required,
-  error,
-  children,
-}: {
-  label: string;
-  htmlFor: string;
-  required?: boolean;
-  error?: string;
-  children: ReactNode;
-}) {
-  return (
-    <div>
-      <label htmlFor={htmlFor} className={labelClass}>
-        {label} {required && <span className="text-muted">*</span>}
-      </label>
-      {children}
-      {error && (
-        <p id={`${htmlFor}-error`} className="mt-1.5 text-[0.8125rem] text-[#9B2C2C]">
-          {error}
-        </p>
-      )}
-    </div>
-  );
-}
 
 export function QuoteForm() {
   const [serviceType, setServiceType] = useState<ServiceType | null>(null);
@@ -68,13 +39,26 @@ export function QuoteForm() {
     note: "",
     units: "",
     frequency: "",
-    company: "", // honeypot
+    company: "",
   });
   const [unitTypes, setUnitTypes] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const successRef = useRef<HTMLDivElement | null>(null);
+
+  // Prefill from the hero card's "Add details" link.
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    const t = p.get("type");
+    if (t === "home" || t === "str") setServiceType(t);
+    setValues((v) => ({
+      ...v,
+      zip: p.get("zip") ?? v.zip,
+      phone: p.get("phone") ?? v.phone,
+      bedsBaths: p.get("size") ?? v.bedsBaths,
+    }));
+  }, []);
 
   const set = (k: keyof typeof values) => (v: string) =>
     setValues((prev) => ({ ...prev, [k]: v }));
@@ -86,9 +70,8 @@ export function QuoteForm() {
   function validate(): boolean {
     const e: Record<string, string> = {};
     if (!values.name.trim()) e.name = "Please add your name.";
-    if (!values.phone.trim()) e.phone = "A phone number is required.";
-    else if (!phoneRe.test(values.phone.trim())) e.phone = "Enter a valid phone number.";
-    if (!values.zip.trim()) e.zip = "Add your zip code.";
+    if (!isValidUsMobile(values.phone)) e.phone = "Enter a 10-digit mobile number.";
+    if (!isValidZip(values.zip)) e.zip = "Enter a 5-digit zip code.";
     if (serviceType === "home" && !values.service) e.service = "Pick a service.";
     if (serviceType === "str" && !values.units.trim()) e.units = "How many units?";
     setErrors(e);
@@ -99,7 +82,7 @@ export function QuoteForm() {
     evt.preventDefault();
     if (!validate()) return;
     if (values.company.trim() !== "") {
-      setSubmitted(true); // silently drop bots
+      setSubmitted(true);
       return;
     }
     setSubmitting(true);
@@ -139,7 +122,6 @@ export function QuoteForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-8">
-      {/* Step 1 — segment */}
       <fieldset>
         <legend className={labelClass}>What are we quoting?</legend>
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
@@ -176,11 +158,11 @@ export function QuoteForm() {
         </div>
       </fieldset>
 
-      {/* Honeypot — always present, off-screen */}
+      {/* Honeypot */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
-        <label htmlFor="company">Company (leave this field blank)</label>
+        <label htmlFor="qf-company">Company (leave this field blank)</label>
         <input
-          id="company"
+          id="qf-company"
           type="text"
           tabIndex={-1}
           autoComplete="off"
@@ -189,7 +171,6 @@ export function QuoteForm() {
         />
       </div>
 
-      {/* Step 2 — fields (morph on branch switch via keyed reveal) */}
       {serviceType && (
         <Reveal key={serviceType} className="space-y-5">
           <div className="grid gap-5 sm:grid-cols-2">
@@ -204,10 +185,11 @@ export function QuoteForm() {
                 className={inputClass}
               />
             </Field>
-            <Field label="Phone" htmlFor="phone" required error={errors.phone}>
+            <Field label="Mobile number" htmlFor="phone" required error={errors.phone}>
               <input
                 id="phone"
                 type="tel"
+                inputMode="numeric"
                 autoComplete="tel"
                 value={values.phone}
                 onChange={(e) => set("phone")(e.target.value)}
@@ -219,7 +201,9 @@ export function QuoteForm() {
               <input
                 id="zip"
                 type="text"
+                inputMode="numeric"
                 autoComplete="postal-code"
+                maxLength={5}
                 value={values.zip}
                 onChange={(e) => set("zip")(e.target.value)}
                 aria-invalid={!!errors.zip}
@@ -242,8 +226,7 @@ export function QuoteForm() {
               <Field label="Number of units" htmlFor="units" required error={errors.units}>
                 <input
                   id="units"
-                  type="number"
-                  min={1}
+                  type="text"
                   inputMode="numeric"
                   value={values.units}
                   onChange={(e) => set("units")(e.target.value)}
@@ -257,29 +240,14 @@ export function QuoteForm() {
           {serviceType === "home" ? (
             <>
               <Field label="Service" htmlFor="service" required error={errors.service}>
-                <div className="relative">
-                  <select
-                    id="service"
-                    value={values.service}
-                    onChange={(e) => set("service")(e.target.value)}
-                    aria-invalid={!!errors.service}
-                    className={`${inputClass} appearance-none pr-10 ${values.service ? "" : "text-muted/60"}`}
-                  >
-                    <option value="" disabled>
-                      Choose a service
-                    </option>
-                    {SERVICE_OPTIONS.map((o) => (
-                      <option key={o} value={o} className="text-navy-900">
-                        {o}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown
-                    size={18}
-                    strokeWidth={1.5}
-                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted"
-                  />
-                </div>
+                <NativeSelect
+                  id="service"
+                  value={values.service}
+                  onChange={set("service")}
+                  options={SERVICE_OPTIONS}
+                  placeholder="Choose a service"
+                  invalid={!!errors.service}
+                />
               </Field>
               <Field label="Anything we should know? (optional)" htmlFor="note">
                 <textarea
@@ -330,7 +298,6 @@ export function QuoteForm() {
             </>
           )}
 
-          {/* Submit + guarantee beside it */}
           <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center">
             <button
               type="submit"
