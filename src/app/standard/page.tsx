@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/blocks/PageHero";
-import { ChecklistAccordion } from "@/components/blocks/ChecklistAccordion";
+import { IncludedAccordion } from "@/components/blocks/IncludedAccordion";
 import { FAQAccordion } from "@/components/blocks/FAQAccordion";
 import { CTABand } from "@/components/blocks/CTABand";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -86,13 +86,13 @@ export default function StandardPage() {
           <div>
             <p className="eyebrow text-navy-700">Home visits</p>
             <div className="mt-5">
-              <ChecklistAccordion groups={RESIDENTIAL_CHECKLIST} />
+              <IncludedAccordion groups={RESIDENTIAL_CHECKLIST} />
             </div>
           </div>
           <div>
             <p className="eyebrow text-navy-700">Turnovers</p>
             <div className="mt-5">
-              <ChecklistAccordion groups={STR_CHECKLIST} />
+              <IncludedAccordion groups={STR_CHECKLIST} />
             </div>
           </div>
         </div>

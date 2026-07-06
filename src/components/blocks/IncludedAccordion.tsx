@@ -5,7 +5,7 @@ import { Plus, Check } from "lucide-react";
 import type { ChecklistGroup } from "@/content/checklists";
 
 /** Collapsed-by-default "what's included" accordion for /standard (v2 §4). */
-export function ChecklistAccordion({ groups }: { groups: ChecklistGroup[] }) {
+export function IncludedAccordion({ groups }: { groups: ChecklistGroup[] }) {
   const [open, setOpen] = useState<number | null>(null);
   const base = useId();
 
