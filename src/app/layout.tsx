@@ -32,6 +32,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName: SITE.brand,
     locale: "en_US",
+    url: SITE.url,
     title: SEO.home.title,
     description: SEO.home.description,
     // TODO(launch): add a real OG/social share image (1200×630) once brand assets exist.
