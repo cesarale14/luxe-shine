@@ -140,8 +140,9 @@ export function Footer() {
         {/* Legal */}
         <div className="mt-8 flex flex-col gap-2 text-[0.8125rem] text-ivory/45 md:flex-row md:items-center md:justify-between">
           <p>
-            © {year} {SITE.legalName}. All rights reserved.
-            {/* TODO(launch): legal footer wording reviewed (entity, licensing, terms/privacy links). */}
+            © {year} {SITE.brand}. Operated by {SITE.legalName}.
+            {/* Visible brand stays "Luxe Shine"; the legal entity appears only in this small
+                legal line (brand rule). TODO(launch): add Terms / Privacy links when ready. */}
           </p>
           <p>{SITE.region}</p>
         </div>

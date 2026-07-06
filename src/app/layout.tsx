@@ -37,7 +37,8 @@ export const metadata: Metadata = {
     // TODO(launch): add a real OG/social share image (1200×630) once brand assets exist.
   },
   robots: { index: true, follow: true },
-  // TODO(launch): confirm canonical domain (SITE.url) and add favicon/app icons.
+  // Canonical domain set via SITE.url (luxeshinesolutionsllc.com).
+  // TODO(launch): add apple-touch icon + a real OG/social share image.
 };
 
 export const viewport: Viewport = {

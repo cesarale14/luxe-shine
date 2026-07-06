@@ -26,7 +26,7 @@ export const SITE = {
   // Business hours drive the quote SLA copy. [ADJUST] to real operating hours.
   hoursDisplay: "Monday–Saturday, 8 AM–6 PM", // [ADJUST]
 
-  url: "https://www.luxeshinetampa.com", // TODO(launch): confirm canonical production domain
+  url: "https://luxeshinesolutionsllc.com", // canonical production domain
   gbpUrl: null as string | null, // TODO(launch): Google Business Profile review link
 } as const;
 
@@ -138,7 +138,7 @@ export const LAUNCH_BLOCKERS = [
   "Real phone number (enables header + mobile click-to-call)",
   "Real email address (monitored within the SLA)",
   "Owner first name (post-submit confirmation)",
-  "Final canonical domain + Google Business Profile link",
+  "Google Business Profile link (canonical domain is set: luxeshinesolutionsllc.com)",
   "Quote form backend + instant owner SMS/email notification, tested end-to-end",
   "2-hour SLA operationally safe (else downgrade copy to 'same business day')",
   "3 real client reviews (verbatim, first name + neighborhood)",
