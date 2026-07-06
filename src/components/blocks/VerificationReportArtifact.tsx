@@ -70,7 +70,7 @@ export function VerificationReportArtifact({
     <figure
       ref={ref}
       className={`overflow-hidden rounded-card border border-line bg-white shadow-card ${className}`.trim()}
-      aria-label="Sample photo-verification report"
+      aria-label="Sample photo report"
     >
       {/* Mono metadata header */}
       <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-3.5">
@@ -114,7 +114,7 @@ export function VerificationReportArtifact({
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-palm-tint">
               <Check size={13} strokeWidth={2} className="text-palm" />
             </span>
-            Checklist complete
+            Standard met
           </span>
           <span className="mono-meta text-navy-700">42 / 42</span>
         </div>

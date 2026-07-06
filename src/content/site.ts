@@ -45,17 +45,17 @@ export const SLA_MICROCOPY = "Quotes within 2 business hours.";
 // TODO(launch): if OWNER_NOTIFICATION_IMPLEMENTED is false at go-live, change every
 // SLA line to "Quotes the same business day." Never publish a promise you can't keep.
 
+// v2 nav: 3 items + button (Our Standard demoted to footer-linked /standard).
 export const NAV: { label: string; href: string; cta?: boolean }[] = [
   { label: "Residential", href: "/residential" },
   { label: "STR Turnovers", href: "/str-turnovers" },
-  { label: "Our Standard", href: "/our-standard" },
-  { label: "Request a Quote", href: "/request-a-quote", cta: true },
+  { label: "Request a Quote", href: "/quote", cta: true },
 ];
 
-export const TRUST_SIGNALS = [
+/** v2 facts line — typeset, once per page. No "photo-verified" phrase (§17). */
+export const FACTS = [
   "Insured & bonded",
   "Background-checked crews",
-  "Photo-verified results",
   "24-hour re-clean guarantee",
 ] as const;
 
@@ -104,22 +104,22 @@ export const SEO = {
   home: {
     title: "House Cleaning & Airbnb Turnovers in Tampa | Luxe Shine",
     description:
-      "Photo-verified cleaning for Tampa homes and short-term rentals. Insured, background-checked crews. Written 24-hour guarantee. Quotes within 2 business hours.",
+      "Hotel-standard cleaning for Tampa homes and short-term rentals. Insured, background-checked crews. A written 24-hour guarantee. Quotes in 2 business hours.",
   },
   residential: {
     title: "Recurring House Cleaning & Deep Cleaning in Tampa | Luxe Shine",
     description:
-      "Premium recurring house cleaning in Tampa — same trained crew whenever schedules allow, published checklist, photo report after every visit. Deep cleans and move-out cleans available.",
+      "Premium recurring house cleaning in Tampa — the same trained crew whenever schedules allow, a photo report after every visit. Deep cleans and move-out cleans available.",
   },
   str: {
     title: "Airbnb & Vacation Rental Turnover Cleaning in Tampa | Luxe Shine",
     description:
       "Short-term rental turnover cleaning in Tampa — cleaned, staged, restocked, and photo-confirmed before every check-in. Damage flags included. Built by Tampa hosts.",
   },
-  ourStandard: {
-    title: "Our Cleaning Standard, Checklists & Guarantee | Luxe Shine Tampa",
+  standard: {
+    title: "The Luxe Shine Standard — Guarantee & Insurance | Tampa",
     description:
-      "The published Luxe Shine checklists, our photo-verification process, written guarantee terms, insurance, and crew standards. Read exactly how we work before you request a quote.",
+      "The Luxe Shine 24-hour guarantee terms, insurance and crew standards, and what's included on every clean and turnover in Tampa.",
   },
   quote: {
     title: "Request a Cleaning Quote in Tampa | Luxe Shine",

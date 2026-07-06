@@ -46,8 +46,8 @@ export function Footer() {
               className="h-auto w-[150px]"
             />
             <p className="mt-4 max-w-xs text-[0.9375rem] leading-relaxed text-ivory/70">
-              Hotel-standard cleaning for Tampa homes and rentals. Photo-verified results,
-              a published checklist, and a written 24-hour guarantee.
+              Hotel-standard cleaning for Tampa homes and short-term rentals. Insured,
+              background-checked crews and a written 24-hour guarantee.
             </p>
             <p className="mt-4 text-[0.8125rem] text-ivory/60">Insured &amp; bonded.</p>
           </div>
@@ -77,7 +77,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/our-standard" className="hover:text-white">
+                <Link href="/standard" className="hover:text-white">
                   The Luxe Shine Guarantee
                 </Link>
               </li>
@@ -96,8 +96,8 @@ export function Footer() {
                 </li>
               ))}
               <li>
-                <Link href="/our-standard" className="hover:text-white">
-                  Our published checklists
+                <Link href="/standard" className="hover:text-white">
+                  The standard &amp; guarantee
                 </Link>
               </li>
             </ul>

@@ -56,7 +56,7 @@ export const RESIDENTIAL_FAQS: Faq[] = [
   },
   {
     q: "How does the guarantee work?",
-    a: "Anything on the checklist missed, tell us within 24 hours — text a photo if it's easier. We return and re-clean the item free. Full terms on Our Standard.",
+    a: "Anything missed, tell us within 24 hours — text a photo if it's easier. We return and re-clean the item free. Full terms on the standard page.",
   },
   {
     q: "Why is the Deep Reset required?",
@@ -95,8 +95,8 @@ export const STR_FAQS: Faq[] = [
 
 export const OUR_STANDARD_FAQS: Faq[] = [
   {
-    q: "Can the checklist be customized for my home or unit?",
-    a: "Yes. Your property's specific notes — the antique table that needs a certain cleaner, the guest-room quirk, your unit's staging spec — get appended to the standard checklist at onboarding and travel with every visit.",
+    q: "Can the standard be tailored to my home or unit?",
+    a: "Yes. Your property's specific notes — the antique table that needs a certain cleaner, the guest-room quirk, your unit's staging spec — get added to your standard at onboarding and travel with every visit.",
   },
   {
     q: "Will you use my preferred products?",

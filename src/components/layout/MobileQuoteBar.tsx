@@ -19,7 +19,7 @@ export function MobileQuoteBar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  if (pathname === "/request-a-quote") return null;
+  if (pathname === "/quote") return null;
 
   return (
     <div
@@ -30,7 +30,7 @@ export function MobileQuoteBar() {
       style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
     >
       <Link
-        href="/request-a-quote"
+        href="/quote"
         className="flex h-11 w-full items-center justify-center rounded-btn bg-ivory text-[0.9375rem] font-medium text-navy-900"
         tabIndex={show ? 0 : -1}
       >

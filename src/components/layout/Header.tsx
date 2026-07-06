@@ -71,12 +71,12 @@ export function Header() {
               {SITE.phone.display}
             </a>
           )}
-          <Button href="/request-a-quote">Request a Quote</Button>
+          <Button href="/quote">Request a Quote</Button>
         </nav>
 
         {/* Mobile controls: quote button stays visible outside the menu (§4) */}
         <div className="flex items-center gap-2 md:hidden">
-          <Button href="/request-a-quote" size="standard" className="h-10 px-4 text-[0.875rem]">
+          <Button href="/quote" size="standard" className="h-10 px-4 text-[0.875rem]">
             Request a Quote
           </Button>
           <button
@@ -122,7 +122,7 @@ export function Header() {
               </Link>
             ))}
             <div className="mt-8">
-              <Button href="/request-a-quote" size="hero" className="w-full">
+              <Button href="/quote" size="hero" className="w-full">
                 Request a Quote
               </Button>
             </div>

@@ -3,35 +3,30 @@
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { ChevronDown, Check } from "lucide-react";
 import Link from "next/link";
-import { SITE, SLA_MICROCOPY, OWNER_NOTIFICATION_IMPLEMENTED } from "@/content/site";
+import { Reveal } from "@/components/ui/Reveal";
+import { SITE, OWNER_NOTIFICATION_IMPLEMENTED } from "@/content/site";
 
 /*
- * Quote form (strategy §10, form spec in the pack).
+ * Quote flow v2 (spec §11): Step 1 = segment (Home/Rental), Step 2 = <=6 fields that
+ * morph between branches. Phone is the contact channel (no email field). Honeypot
+ * anti-spam, inputs >=16px, designed success state.
  *
- * BACKEND — P0 LAUNCH BLOCKER:
- * This uses a PLACEHOLDER submit handler. There is no backend yet.
- * TODO(launch): POST submissions to an endpoint that fires an INSTANT owner
- *   SMS/email notification, tested end-to-end, BEFORE publishing the 2-business-hour
- *   SLA. See OWNER_NOTIFICATION_IMPLEMENTED in src/content/site.ts.
- *   If notifications are NOT live at launch, change all SLA copy to "same business day".
+ * BACKEND — P0 LAUNCH BLOCKER (unchanged): placeholder submit handler, no backend.
+ * TODO(launch): POST to an endpoint that fires an INSTANT owner SMS/email notification,
+ *   tested end-to-end, before the 2-business-hour SLA is production-safe. If not live,
+ *   change SLA copy to "same business day". See OWNER_NOTIFICATION_IMPLEMENTED.
  */
 
 type ServiceType = "home" | "str";
 
 const inputClass =
-  // text-base = 16px so iOS never auto-zooms the field (design §13).
+  // text-base = 16px so iOS never auto-zooms the field.
   "w-full rounded-btn border border-line bg-white px-4 py-3 text-base text-navy-900 placeholder:text-muted/60 transition-colors focus:border-navy-600 focus:outline-none focus:ring-2 focus:ring-navy-600/20";
 const labelClass = "mb-1.5 block text-[0.8125rem] font-medium text-navy-900";
 
-const SERVICE_OPTIONS = [
-  "Signature Clean (recurring)",
-  "The Deep Reset (deep clean)",
-  "Move-Ready Clean (move in/out)",
-];
+const SERVICE_OPTIONS = ["Signature Clean (recurring)", "Deep Clean", "Move-In / Out"];
 const UNIT_TYPE_OPTIONS = ["Studio", "1BR", "2BR", "3BR+"];
-const PLATFORM_OPTIONS = ["Airbnb", "VRBO", "Both", "Other"];
 
-const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRe = /^[+(]?[\d][\d\s().-]{6,}$/;
 
 function Field({
@@ -62,65 +57,18 @@ function Field({
   );
 }
 
-function Select({
-  id,
-  value,
-  onChange,
-  options,
-  placeholder,
-  invalid,
-}: {
-  id: string;
-  value: string;
-  onChange: (v: string) => void;
-  options: string[];
-  placeholder: string;
-  invalid?: boolean;
-}) {
-  return (
-    <div className="relative">
-      <select
-        id={id}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        aria-invalid={invalid || undefined}
-        aria-describedby={invalid ? `${id}-error` : undefined}
-        className={`${inputClass} appearance-none pr-10 ${value ? "" : "text-muted/60"}`}
-      >
-        <option value="" disabled>
-          {placeholder}
-        </option>
-        {options.map((o) => (
-          <option key={o} value={o} className="text-navy-900">
-            {o}
-          </option>
-        ))}
-      </select>
-      <ChevronDown
-        size={18}
-        strokeWidth={1.5}
-        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted"
-        aria-hidden="true"
-      />
-    </div>
-  );
-}
-
 export function QuoteForm() {
   const [serviceType, setServiceType] = useState<ServiceType | null>(null);
   const [values, setValues] = useState({
     name: "",
     phone: "",
-    email: "",
     zip: "",
     bedsBaths: "",
     service: "",
-    timing: "",
+    note: "",
     units: "",
-    platform: "",
     frequency: "",
-    notes: "",
-    company: "", // honeypot — must stay empty
+    company: "", // honeypot
   });
   const [unitTypes, setUnitTypes] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -132,21 +80,16 @@ export function QuoteForm() {
     setValues((prev) => ({ ...prev, [k]: v }));
 
   function toggleUnitType(t: string) {
-    setUnitTypes((prev) =>
-      prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]
-    );
+    setUnitTypes((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
   }
 
   function validate(): boolean {
     const e: Record<string, string> = {};
-    if (!serviceType) e.serviceType = "Choose what we're quoting.";
     if (!values.name.trim()) e.name = "Please add your name.";
-    if (!values.phone.trim()) e.phone = "A phone number is required — quotes often close on a call.";
+    if (!values.phone.trim()) e.phone = "A phone number is required.";
     else if (!phoneRe.test(values.phone.trim())) e.phone = "Enter a valid phone number.";
-    if (!values.email.trim()) e.email = "An email is required.";
-    else if (!emailRe.test(values.email.trim())) e.email = "Enter a valid email address.";
-    if (!values.zip.trim()) e.zip = "Add your zip code so we can confirm we serve you.";
-    if (serviceType === "home" && !values.service) e.service = "Pick a service to start.";
+    if (!values.zip.trim()) e.zip = "Add your zip code.";
+    if (serviceType === "home" && !values.service) e.service = "Pick a service.";
     if (serviceType === "str" && !values.units.trim()) e.units = "How many units?";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -155,19 +98,13 @@ export function QuoteForm() {
   async function handleSubmit(evt: FormEvent) {
     evt.preventDefault();
     if (!validate()) return;
-
-    // Honeypot: a real user never fills this. Silently drop bots as a "success".
     if (values.company.trim() !== "") {
-      setSubmitted(true);
+      setSubmitted(true); // silently drop bots
       return;
     }
-
     setSubmitting(true);
     const payload = { serviceType, ...values, unitTypes };
     try {
-      // TODO(backend): replace this placeholder with a POST to a real endpoint that
-      // triggers an INSTANT owner notification (SMS/email), tested end-to-end, before
-      // the 2-business-hour SLA is treated as production-safe.
       if (!OWNER_NOTIFICATION_IMPLEMENTED) {
         console.info("[Luxe Shine] Quote request (placeholder — no backend):", payload);
       }
@@ -191,18 +128,10 @@ export function QuoteForm() {
           <Check size={22} strokeWidth={2} className="text-palm" />
         </span>
         <h2 className="display-2 mt-6">Got it.</h2>
-        <p className="mt-4 max-w-xl text-[0.9375rem] leading-relaxed text-muted md:text-base">
-          Your quote is being prepared now — expect it within 2 business hours. It will
-          come from {SITE.ownerFirstName} directly, by text or email, whichever you prefer.
-          If you requested outside business hours, you&rsquo;ll hear from us first thing the
-          next business morning.
-        </p>
-        <p className="mt-6 text-[0.9375rem] text-muted">
-          In the meantime, the full cleaning standard is published here if you haven&rsquo;t
-          read it yet:{" "}
-          <Link href="/our-standard" className="link-cta">
-            Read the Luxe Shine Standard
-          </Link>
+        <p className="mt-4 max-w-md text-[0.9375rem] leading-relaxed text-muted md:text-base">
+          {SITE.ownerFirstName} will text you within 2 business hours with a flat-rate quote,
+          in writing. If you wrote outside business hours, you&rsquo;ll hear back first thing
+          the next business morning.
         </p>
       </div>
     );
@@ -210,16 +139,14 @@ export function QuoteForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-8">
-      {/* Service-type selector — controls conditional fields */}
+      {/* Step 1 — segment */}
       <fieldset>
-        <legend className={labelClass}>
-          What are we quoting? <span className="text-muted">*</span>
-        </legend>
+        <legend className={labelClass}>What are we quoting?</legend>
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
           {(
             [
               { key: "home", label: "My home" },
-              { key: "str", label: "My short-term rental(s)" },
+              { key: "str", label: "My rental(s)" },
             ] as { key: ServiceType; label: string }[]
           ).map((opt) => {
             const active = serviceType === opt.key;
@@ -247,13 +174,9 @@ export function QuoteForm() {
             );
           })}
         </div>
-        {errors.serviceType && (
-          <p className="mt-2 text-[0.8125rem] text-[#9B2C2C]">{errors.serviceType}</p>
-        )}
       </fieldset>
 
-      {/* Honeypot — always present, visually hidden, off-screen, skipped by AT.
-          A real user never fills it; bots that do are silently dropped on submit. */}
+      {/* Honeypot — always present, off-screen */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
         <label htmlFor="company">Company (leave this field blank)</label>
         <input
@@ -266,9 +189,9 @@ export function QuoteForm() {
         />
       </div>
 
+      {/* Step 2 — fields (morph on branch switch via keyed reveal) */}
       {serviceType && (
-        <>
-          {/* Shared contact fields */}
+        <Reveal key={serviceType} className="space-y-5">
           <div className="grid gap-5 sm:grid-cols-2">
             <Field label="Name" htmlFor="name" required error={errors.name}>
               <input
@@ -278,7 +201,6 @@ export function QuoteForm() {
                 value={values.name}
                 onChange={(e) => set("name")(e.target.value)}
                 aria-invalid={!!errors.name}
-                aria-describedby={errors.name ? "name-error" : undefined}
                 className={inputClass}
               />
             </Field>
@@ -290,28 +212,10 @@ export function QuoteForm() {
                 value={values.phone}
                 onChange={(e) => set("phone")(e.target.value)}
                 aria-invalid={!!errors.phone}
-                aria-describedby={errors.phone ? "phone-error" : undefined}
                 className={inputClass}
               />
             </Field>
-            <Field label="Email" htmlFor="email" required error={errors.email}>
-              <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                value={values.email}
-                onChange={(e) => set("email")(e.target.value)}
-                aria-invalid={!!errors.email}
-                aria-describedby={errors.email ? "email-error" : undefined}
-                className={inputClass}
-              />
-            </Field>
-            <Field
-              label={serviceType === "str" ? "Zip code(s)" : "Zip code"}
-              htmlFor="zip"
-              required
-              error={errors.zip}
-            >
+            <Field label="Zip code" htmlFor="zip" required error={errors.zip}>
               <input
                 id="zip"
                 type="text"
@@ -319,15 +223,11 @@ export function QuoteForm() {
                 value={values.zip}
                 onChange={(e) => set("zip")(e.target.value)}
                 aria-invalid={!!errors.zip}
-                aria-describedby={errors.zip ? "zip-error" : undefined}
                 className={inputClass}
               />
             </Field>
-          </div>
 
-          {/* Residential branch */}
-          {serviceType === "home" && (
-            <div className="grid gap-5 sm:grid-cols-2">
+            {serviceType === "home" ? (
               <Field label="Bedrooms / bathrooms" htmlFor="bedsBaths">
                 <input
                   id="bedsBaths"
@@ -338,69 +238,65 @@ export function QuoteForm() {
                   className={inputClass}
                 />
               </Field>
-              <Field label="Service" htmlFor="service" required error={errors.service}>
-                <Select
-                  id="service"
-                  value={values.service}
-                  onChange={set("service")}
-                  options={SERVICE_OPTIONS}
-                  placeholder="Choose a service"
-                  invalid={!!errors.service}
-                />
-              </Field>
-              <Field label="Preferred timing" htmlFor="timing">
+            ) : (
+              <Field label="Number of units" htmlFor="units" required error={errors.units}>
                 <input
-                  id="timing"
-                  type="text"
-                  placeholder="e.g. weekday mornings, starting next month"
-                  value={values.timing}
-                  onChange={(e) => set("timing")(e.target.value)}
+                  id="units"
+                  type="number"
+                  min={1}
+                  inputMode="numeric"
+                  value={values.units}
+                  onChange={(e) => set("units")(e.target.value)}
+                  aria-invalid={!!errors.units}
                   className={inputClass}
                 />
               </Field>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* STR branch */}
-          {serviceType === "str" && (
-            <div className="space-y-5">
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Field label="Number of units" htmlFor="units" required error={errors.units}>
-                  <input
-                    id="units"
-                    type="number"
-                    min={1}
-                    inputMode="numeric"
-                    value={values.units}
-                    onChange={(e) => set("units")(e.target.value)}
-                    aria-invalid={!!errors.units}
-                    aria-describedby={errors.units ? "units-error" : undefined}
-                    className={inputClass}
+          {serviceType === "home" ? (
+            <>
+              <Field label="Service" htmlFor="service" required error={errors.service}>
+                <div className="relative">
+                  <select
+                    id="service"
+                    value={values.service}
+                    onChange={(e) => set("service")(e.target.value)}
+                    aria-invalid={!!errors.service}
+                    className={`${inputClass} appearance-none pr-10 ${values.service ? "" : "text-muted/60"}`}
+                  >
+                    <option value="" disabled>
+                      Choose a service
+                    </option>
+                    {SERVICE_OPTIONS.map((o) => (
+                      <option key={o} value={o} className="text-navy-900">
+                        {o}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={18}
+                    strokeWidth={1.5}
+                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted"
                   />
-                </Field>
-                <Field label="Platform" htmlFor="platform">
-                  <Select
-                    id="platform"
-                    value={values.platform}
-                    onChange={set("platform")}
-                    options={PLATFORM_OPTIONS}
-                    placeholder="Airbnb / VRBO / both / other"
-                  />
-                </Field>
-                <Field label="Turnover frequency" htmlFor="frequency">
-                  <input
-                    id="frequency"
-                    type="text"
-                    placeholder="estimated turns per month"
-                    value={values.frequency}
-                    onChange={(e) => set("frequency")(e.target.value)}
-                    className={inputClass}
-                  />
-                </Field>
-              </div>
-              <fieldset>
-                <legend className={labelClass}>Unit types</legend>
-                <div className="mt-1 flex flex-wrap gap-2">
+                </div>
+              </Field>
+              <Field label="Anything we should know? (optional)" htmlFor="note">
+                <textarea
+                  id="note"
+                  rows={3}
+                  placeholder="Pets, access, priorities…"
+                  value={values.note}
+                  onChange={(e) => set("note")(e.target.value)}
+                  className={`${inputClass} resize-y`}
+                />
+              </Field>
+            </>
+          ) : (
+            <>
+              <div>
+                <span className={labelClass}>Unit types</span>
+                <div className="flex flex-wrap gap-2">
                   {UNIT_TYPE_OPTIONS.map((t) => {
                     const active = unitTypes.includes(t);
                     return (
@@ -420,40 +316,41 @@ export function QuoteForm() {
                     );
                   })}
                 </div>
-              </fieldset>
-            </div>
+              </div>
+              <Field label="Turnovers per month" htmlFor="frequency">
+                <input
+                  id="frequency"
+                  type="text"
+                  placeholder="estimated"
+                  value={values.frequency}
+                  onChange={(e) => set("frequency")(e.target.value)}
+                  className={inputClass}
+                />
+              </Field>
+            </>
           )}
 
-          {/* Shared notes */}
-          <Field label="Anything we should know? (optional)" htmlFor="notes">
-            <textarea
-              id="notes"
-              rows={4}
-              placeholder={
-                serviceType === "home"
-                  ? "Pets, access, priorities…"
-                  : "Access, linen setup, PMS/calendar, priorities…"
-              }
-              value={values.notes}
-              onChange={(e) => set("notes")(e.target.value)}
-              className={`${inputClass} resize-y`}
-            />
-          </Field>
-
-          <div>
+          {/* Submit + guarantee beside it */}
+          <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center">
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex h-[52px] w-full items-center justify-center rounded-btn bg-navy-900 px-7 text-[1.0625rem] font-medium text-white transition-colors duration-ui ease-out-luxe hover:bg-navy-600 disabled:opacity-40 sm:w-auto"
+              className="inline-flex h-[52px] items-center justify-center rounded-btn bg-navy-900 px-8 text-[1.0625rem] font-medium text-white transition-colors duration-ui ease-out-luxe hover:bg-navy-600 disabled:opacity-40"
             >
               {submitting ? "Sending…" : "Request My Quote"}
             </button>
-            <p className="mt-4 max-w-md text-[0.8125rem] leading-relaxed text-muted">
-              No spam, no sales sequence. A quote and one brief follow-up — that&rsquo;s it.
+            <p className="text-[0.8125rem] leading-relaxed text-muted">
+              Anything missed, we re-clean within 24 hours.{" "}
+              <span className="font-medium text-palm">Free.</span>
             </p>
-            <p className="mono-meta mt-2">{SLA_MICROCOPY}</p>
           </div>
-        </>
+          <p className="text-[0.8125rem] text-muted">
+            No spam, no sales sequence — a quote and one brief follow-up.{" "}
+            <Link href="/standard" className="link-cta">
+              Read the standard
+            </Link>
+          </p>
+        </Reveal>
       )}
     </form>
   );
