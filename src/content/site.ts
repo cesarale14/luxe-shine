@@ -20,7 +20,7 @@ export const SITE = {
     display: "[ADD PHONE]", // TODO(launch): real phone number
     href: null as string | null, // e.g. "tel:+18135550100" — enables click-to-call
   },
-  email: "[ADD EMAIL]", // TODO(launch): real inbox that is monitored within the SLA
+  email: "contact@luxeshinesolutionsllc.com", // official business email; domain matches the website (Twilio Trust Hub)
   ownerFirstName: "[OWNER FIRST NAME]", // TODO(launch): used in the post-submit confirmation
 
   // Business hours drive the quote SLA copy. [ADJUST] to real operating hours.
@@ -136,7 +136,7 @@ export const isPlaceholder = (v: string | null | undefined): boolean =>
 /** Surfaced in the build summary + docs. Not rendered to visitors. */
 export const LAUNCH_BLOCKERS = [
   "Real phone number (enables header + mobile click-to-call)",
-  "Real email address (monitored within the SLA)",
+  "Confirm the contact@luxeshinesolutionsllc.com inbox is monitored within the SLA",
   "Owner first name (post-submit confirmation)",
   "Google Business Profile link (canonical domain is set: luxeshinesolutionsllc.com)",
   "Quote form backend + instant owner SMS/email notification, tested end-to-end",
