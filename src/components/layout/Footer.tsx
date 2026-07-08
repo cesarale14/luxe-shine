@@ -16,9 +16,9 @@ function Contact({ label, value, href }: { label: string; value: string; href: s
     <li>
       <span className="text-muted">{label}: </span>
       {placeholder || !href ? (
-        <span className="text-muted">{value}</span>
+        <span className="break-words text-muted">{value}</span>
       ) : (
-        <a href={href} className="text-ivory/90 hover:text-white">
+        <a href={href} className="break-words text-ivory/90 hover:text-white">
           {value}
         </a>
       )}
