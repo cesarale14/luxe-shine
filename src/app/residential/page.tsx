@@ -5,7 +5,7 @@ import { ServiceRevealCard } from "@/components/blocks/ServiceRevealCard";
 import { StepList } from "@/components/blocks/StepList";
 import { FAQAccordion } from "@/components/blocks/FAQAccordion";
 import { CTABand } from "@/components/blocks/CTABand";
-import { PhotoPlaceholder } from "@/components/blocks/PhotoPlaceholder";
+import { PhotoFrame } from "@/components/blocks/PhotoFrame";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqSchema } from "@/lib/schema";
@@ -33,7 +33,14 @@ export default function ResidentialPage() {
         subhead="Recurring cleaning, a consistent crew, and a photo report after every visit."
         primaryCta={{ label: "Request a Quote", href: "/quote" }}
         showSla={false}
-        aside={<PhotoPlaceholder label="RESIDENTIAL — warm, lived-in room" ratio="4 / 3" />}
+        aside={
+          <PhotoFrame
+            src="/photos/residential-living-room.jpg"
+            alt="A warm, lived-in living room, freshly cleaned"
+            ratio="4 / 3"
+            priority
+          />
+        }
       />
 
       {/* Empathy + consistency, compressed to two lines */}

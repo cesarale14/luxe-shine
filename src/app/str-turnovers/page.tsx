@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Check, BedDouble, Package, Camera, Flag } from "lucide-react";
 import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/blocks/PageHero";
+import { PhotoFrame } from "@/components/blocks/PhotoFrame";
 import { TurnoverTimeline } from "@/components/blocks/TurnoverTimeline";
 import { FAQAccordion } from "@/components/blocks/FAQAccordion";
 import { CTABand } from "@/components/blocks/CTABand";
@@ -35,7 +36,14 @@ export default function StrTurnoversPage() {
         subhead="Cleaned, staged, restocked, and confirmed before every check-in."
         primaryCta={{ label: "STR Turnover Quote", href: "/quote" }}
         showSla={false}
-        aside={<PhotoPlaceholder label="STR — crisp unit, straight-on" ratio="4 / 3" />}
+        aside={
+          <PhotoFrame
+            src="/photos/str-unit.jpg"
+            alt="A crisp, staged short-term rental bedroom with fresh towels, ready for check-in"
+            ratio="4 / 3"
+            priority
+          />
+        }
       />
 
       {/* Turnover timeline — the page's orchestrated moment */}
