@@ -4,10 +4,8 @@ import { ArrowRight } from "lucide-react";
 
 /**
  * Path split (v2 §2, §7.2): two large panels — For Your Home / For Your Rental.
- * Tapping navigates. The home panel carries a real photo; panels without one fall back
+ * Tapping navigates. Each panel carries a real photo; any panel without one falls back
  * to a scene-tone placeholder that crossfades on hover.
- *
- * TODO(brand): add a real crisp-rental photo to the "For Your Rental" panel.
  */
 type Panel = {
   eyebrow: string;
@@ -39,6 +37,10 @@ const PANELS: Panel[] = [
     cta: "Explore STR Turnovers",
     base: "#e6e9ea", // crisp rental
     hover: "#eef1f2",
+    image: {
+      src: "/photos/rental-bedroom.jpg",
+      alt: "A staged short-term rental bedroom with fresh towels, ready for check-in",
+    },
   },
 ];
 
