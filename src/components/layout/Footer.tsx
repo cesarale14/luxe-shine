@@ -108,7 +108,9 @@ export function Footer() {
             <p className="eyebrow text-ivory/50">Luxe Shine</p>
             <ul className="mt-4 space-y-2 text-[0.9375rem]">
               <li className="text-ivory/90">Serving {SITE.region}</li>
-              <Contact label="Phone" value={SITE.phone.display} href={SITE.phone.href} />
+              {SITE.phones.map((p) => (
+                <Contact key={p.href} label={p.lang} value={p.display} href={p.href} />
+              ))}
               <Contact
                 label="Email"
                 value={SITE.email}

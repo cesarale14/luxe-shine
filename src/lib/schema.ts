@@ -28,6 +28,12 @@ export function localBusinessSchema(): Record<string, unknown> {
   };
   if (!isPlaceholder(SITE.phone.href) && SITE.phone.href) {
     schema.telephone = SITE.phone.href.replace(/^tel:/, "");
+    schema.contactPoint = SITE.phones.map((p) => ({
+      "@type": "ContactPoint",
+      telephone: p.href.replace(/^tel:/, ""),
+      contactType: "customer service",
+      availableLanguage: p.lang,
+    }));
   }
   if (!isPlaceholder(SITE.email)) schema.email = SITE.email;
   if (SITE.gbpUrl) schema.sameAs = [SITE.gbpUrl];

@@ -59,7 +59,6 @@ export default function HomePage() {
       {/* 4 — CTA band (button anchors to the hero card) */}
       <CTABand
         heading="Get your quote."
-        sub="Flat-rate and in writing, straight from the owner."
         cta={{ label: "Request a Quote", href: "#quote-card" }}
       />
     </>

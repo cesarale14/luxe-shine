@@ -17,9 +17,13 @@ export const SITE = {
 
   // TODO(launch): replace every [PLACEHOLDER] before publishing.
   phone: {
-    display: "[ADD PHONE]", // TODO(launch): real phone number
-    href: null as string | null, // e.g. "tel:+18135550100" — enables click-to-call
+    display: "(813) 318-2477", // primary line (English) — header + JSON-LD telephone
+    href: "tel:+18133182477",
   },
+  phones: [
+    { lang: "English", display: "(813) 318-2477", href: "tel:+18133182477" },
+    { lang: "Spanish", display: "(813) 593-7797", href: "tel:+18135937797" },
+  ],
   email: "contact@luxeshinesolutionsllc.com", // official business email; domain matches the website (Twilio Trust Hub)
   ownerFirstName: "[OWNER FIRST NAME]", // TODO(launch): used in the post-submit confirmation
 
@@ -135,7 +139,6 @@ export const isPlaceholder = (v: string | null | undefined): boolean =>
 
 /** Surfaced in the build summary + docs. Not rendered to visitors. */
 export const LAUNCH_BLOCKERS = [
-  "Real phone number (enables header + mobile click-to-call)",
   "Confirm the contact@luxeshinesolutionsllc.com inbox is monitored within the SLA",
   "Owner first name (post-submit confirmation)",
   "Google Business Profile link (canonical domain is set: luxeshinesolutionsllc.com)",
