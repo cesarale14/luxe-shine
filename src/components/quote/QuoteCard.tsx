@@ -4,24 +4,21 @@ import { useEffect, useRef, useState, type KeyboardEvent, type FormEvent } from 
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { Field, NativeSelect, inputClass, isValidZip, isValidUsMobile } from "./fields";
-import { AddressAutocomplete } from "./AddressAutocomplete";
 import { Reveal } from "@/components/ui/Reveal";
 import { isLikelyBot } from "@/lib/antiAbuse";
 import { SITE, OWNER_NOTIFICATION_IMPLEMENTED } from "@/content/site";
 
 /*
- * Hero QuoteCard (v2.1, v2.3). Segmented Home/Rental toggle, mode-specific fields, morph
- * on switch, success morphs in place with an "Add details" prefill link. Anti-abuse:
+ * Hero QuoteCard (v2.1). Segmented Home/Rental toggle, mode-specific fields, morph on
+ * switch, success morphs in place with an "Add details" prefill link. Anti-abuse:
  * honeypot + >2s time-gate (isLikelyBot). Posts the lead to the (placeholder) pipeline.
  *
- * v2.3: My Home takes a Mapbox address (autocomplete) in place of the bare zip — the zip
- * is extracted from the chosen address for the payload. My Rental adds a booking-platform
- * dropdown.
+ * My Home: zip, size, mobile. My Rental: zip, units, booking platform, mobile.
  *
  * BACKEND — P0 LAUNCH BLOCKER: no real endpoint yet.
- * TODO(launch): POST {mode, address|zip, size|units, platform, phone, source_page, ts} to
- *   the real quote notification pipeline (instant owner SMS), add per-IP rate limiting, and
- *   confirm end-to-end BEFORE the 2-business-hour SLA promise (success state + /quote) is
+ * TODO(launch): POST {mode, zip, size|units, platform, phone, source_page, ts} to the real
+ *   quote notification pipeline (instant owner SMS), add per-IP rate limiting, and confirm
+ *   end-to-end BEFORE the 2-business-hour SLA promise (success state + /quote) is
  *   production-safe.
  */
 
@@ -32,20 +29,9 @@ const UNIT_OPTIONS = ["1", "2–4", "5+"];
 const PLATFORM_OPTIONS = ["Airbnb", "Vrbo", "Booking.com", "Multiple platforms", "Direct / other"];
 const cardShadow = "shadow-[0_4px_16px_rgba(16,35,63,0.08)]";
 
-const zipFromAddress = (a: string) => a.match(/\b(\d{5})\b/)?.[1] ?? "";
-
 export function QuoteCard({ sourcePage = "home" }: { sourcePage?: string }) {
   const [mode, setMode] = useState<Mode>("home");
-  const [values, setValues] = useState({
-    address: "",
-    addressZip: "",
-    zip: "",
-    size: "",
-    units: "",
-    platform: "",
-    phone: "",
-    company: "",
-  });
+  const [values, setValues] = useState({ zip: "", size: "", units: "", platform: "", phone: "", company: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState<null | { mode: Mode; units: string; zip: string; phone: string; size: string }>(
@@ -78,18 +64,12 @@ export function QuoteCard({ sourcePage = "home" }: { sourcePage?: string }) {
     }
   }
 
-  const homeZip = () => values.addressZip || zipFromAddress(values.address);
-
   function validate(): boolean {
     const e: Record<string, string> = {};
-    if (mode === "home") {
-      if (values.address.trim().length < 5) e.address = "Enter your home address.";
-      if (!values.size) e.size = "Pick a home size.";
-    } else {
-      if (!isValidZip(values.zip)) e.zip = "Enter a 5-digit zip code.";
-      if (!values.units) e.units = "How many units?";
-      if (!values.platform) e.platform = "Where do you list?";
-    }
+    if (!isValidZip(values.zip)) e.zip = "Enter a 5-digit zip code.";
+    if (mode === "home" && !values.size) e.size = "Pick a home size.";
+    if (mode === "str" && !values.units) e.units = "How many units?";
+    if (mode === "str" && !values.platform) e.platform = "Where do you list?";
     if (!isValidUsMobile(values.phone)) e.phone = "Enter a 10-digit mobile number.";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -98,19 +78,17 @@ export function QuoteCard({ sourcePage = "home" }: { sourcePage?: string }) {
   async function handleSubmit(evt: FormEvent) {
     evt.preventDefault();
     const elapsedMs = Date.now() - renderedAt.current;
-    const zip = mode === "home" ? homeZip() : values.zip;
     // Anti-abuse: honeypot + time-gate. Bots are dropped as a silent "success".
     if (isLikelyBot({ honeypot: values.company, elapsedMs })) {
-      setDone({ mode, units: values.units, zip, phone: values.phone, size: values.size });
+      setDone({ mode, units: values.units, zip: values.zip, phone: values.phone, size: values.size });
       return;
     }
     if (!validate()) return;
     setSubmitting(true);
     const payload = {
       mode,
-      ...(mode === "home"
-        ? { address: values.address, zip, size: values.size }
-        : { zip, units: values.units, platform: values.platform }),
+      zip: values.zip,
+      ...(mode === "home" ? { size: values.size } : { units: values.units, platform: values.platform }),
       phone: values.phone,
       source_page: sourcePage,
       ts: new Date().toISOString(),
@@ -120,7 +98,7 @@ export function QuoteCard({ sourcePage = "home" }: { sourcePage?: string }) {
         console.info("[Luxe Shine] Quote card (placeholder — no backend):", payload);
       }
       await new Promise((r) => setTimeout(r, 400));
-      setDone({ mode, units: values.units, zip, phone: values.phone, size: values.size });
+      setDone({ mode, units: values.units, zip: values.zip, phone: values.phone, size: values.size });
     } finally {
       setSubmitting(false);
     }
@@ -190,49 +168,37 @@ export function QuoteCard({ sourcePage = "home" }: { sourcePage?: string }) {
           </button>
         </div>
 
-        {/* Fields (morph on mode switch) */}
+        {/* Fields */}
         <div className="mt-5 space-y-4">
+          <Field label="Zip code" htmlFor="qc-zip" required error={errors.zip}>
+            <input
+              id="qc-zip"
+              type="text"
+              inputMode="numeric"
+              autoComplete="postal-code"
+              maxLength={5}
+              value={values.zip}
+              onChange={(e) => set("zip")(e.target.value)}
+              aria-invalid={!!errors.zip}
+              className={inputClass}
+            />
+          </Field>
+
+          {/* Mode-specific fields (morph on switch) */}
           <Reveal key={mode} className="space-y-4">
             {mode === "home" ? (
-              <>
-                <Field label="Home address" htmlFor="qc-address" required error={errors.address}>
-                  <AddressAutocomplete
-                    id="qc-address"
-                    value={values.address}
-                    onChange={set("address")}
-                    onSelect={({ address, zip }) =>
-                      setValues((p) => ({ ...p, address, addressZip: zip }))
-                    }
-                    invalid={!!errors.address}
-                    placeholder="Start typing your address"
-                  />
-                </Field>
-                <Field label="Home size" htmlFor="qc-size" required error={errors.size}>
-                  <NativeSelect
-                    id="qc-size"
-                    value={values.size}
-                    onChange={set("size")}
-                    options={SIZE_OPTIONS}
-                    placeholder="Choose size"
-                    invalid={!!errors.size}
-                  />
-                </Field>
-              </>
+              <Field label="Home size" htmlFor="qc-size" required error={errors.size}>
+                <NativeSelect
+                  id="qc-size"
+                  value={values.size}
+                  onChange={set("size")}
+                  options={SIZE_OPTIONS}
+                  placeholder="Choose size"
+                  invalid={!!errors.size}
+                />
+              </Field>
             ) : (
               <>
-                <Field label="Zip code" htmlFor="qc-zip" required error={errors.zip}>
-                  <input
-                    id="qc-zip"
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="postal-code"
-                    maxLength={5}
-                    value={values.zip}
-                    onChange={(e) => set("zip")(e.target.value)}
-                    aria-invalid={!!errors.zip}
-                    className={inputClass}
-                  />
-                </Field>
                 <Field label="Units" htmlFor="qc-units" required error={errors.units}>
                   <NativeSelect
                     id="qc-units"
