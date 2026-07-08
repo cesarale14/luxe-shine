@@ -4,7 +4,6 @@ import { useEffect, useRef, useState, type KeyboardEvent, type FormEvent } from 
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { Field, NativeSelect, inputClass, isValidZip, isValidUsMobile } from "./fields";
-import { Reveal } from "@/components/ui/Reveal";
 import { isLikelyBot } from "@/lib/antiAbuse";
 import { SITE, OWNER_NOTIFICATION_IMPLEMENTED } from "@/content/site";
 
@@ -42,11 +41,13 @@ export function QuoteCard({ sourcePage = "home" }: { sourcePage?: string }) {
     null
   );
   const renderedAt = useRef(0);
+  const morphReady = useRef(false); // false on first paint → fields visible immediately, no animation
   const homeRef = useRef<HTMLButtonElement | null>(null);
   const strRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     renderedAt.current = Date.now();
+    morphReady.current = true; // subsequent mode switches animate; the initial render did not
     const params = new URLSearchParams(window.location.search);
     if (params.get("type") === "str") setMode("str");
   }, []);
@@ -180,7 +181,7 @@ export function QuoteCard({ sourcePage = "home" }: { sourcePage?: string }) {
 
         {/* Mode-specific fields (morph on switch) */}
         <div className="mt-5 space-y-4">
-          <Reveal key={mode} className="space-y-4">
+          <div key={mode} className={`space-y-4 ${morphReady.current ? "qc-morph" : ""}`}>
             {mode === "home" ? (
               <>
                 <Field label="Home address" htmlFor="qc-address" required error={errors.address}>
@@ -243,7 +244,7 @@ export function QuoteCard({ sourcePage = "home" }: { sourcePage?: string }) {
                 </Field>
               </>
             )}
-          </Reveal>
+          </div>
 
           <Field label="Mobile number" htmlFor="qc-phone" required error={errors.phone}>
             <input

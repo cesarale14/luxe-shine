@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Check } from "lucide-react";
 import Link from "next/link";
-import { Reveal } from "@/components/ui/Reveal";
 import {
   Field,
   NativeSelect,
@@ -172,7 +171,7 @@ export function QuoteForm() {
       </div>
 
       {serviceType && (
-        <Reveal key={serviceType} className="space-y-5">
+        <div key={serviceType} className="space-y-5 qc-morph">
           <div className="grid gap-5 sm:grid-cols-2">
             <Field label="Name" htmlFor="name" required error={errors.name}>
               <input
@@ -317,7 +316,7 @@ export function QuoteForm() {
               Read the standard
             </Link>
           </p>
-        </Reveal>
+        </div>
       )}
     </form>
   );

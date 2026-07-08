@@ -27,7 +27,7 @@ export function MobileQuoteBar() {
   return (
     <div
       aria-hidden={!show}
-      className={`fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-navy-900 px-4 pt-3 transition-transform duration-ui ease-out-luxe md:hidden ${
+      className={`fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-navy-900 px-4 pt-3 transition-transform duration-ui ease-out-luxe lg:hidden ${
         show ? "translate-y-0" : "translate-y-full"
       }`}
       style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}

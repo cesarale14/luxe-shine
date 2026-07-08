@@ -229,3 +229,36 @@
     clip-path: inset(0 0 0 100%);
   }
 }
+
+/* Quote-card field morph on Home/Rental switch. A guaranteed CSS animation (runs on
+   the keyed remount) that ENDS visible — never an IntersectionObserver reveal, so the
+   required fields can never be stuck at opacity 0. Neutralized under reduced-motion by
+   the global rule above. */
+@keyframes qc-morph {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.qc-morph {
+  animation: qc-morph 200ms var(--ease-out);
+}
+
+/* Mobile menu sheet entrance (portaled to <body>, outside the blurred header). */
+@keyframes menu-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.menu-sheet-in {
+  animation: menu-sheet-in 200ms var(--ease-out);
+}
