@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Check, ChevronDown, ArrowRight } from "lucide-react";
 
 /**
  * Service card (v2 §8): photo top, title, one line; hover OR tap reveals 3 included
  * items. Tap equivalent = the toggle button, so no hover-only information anywhere.
- * TODO(brand): swap the tone panel for a real photo of the finished work.
+ * A real photo renders in the top slot when `image` is provided; otherwise the tone
+ * panel + [PHOTO] marker stands in.
  */
 export function ServiceRevealCard({
   title,
@@ -16,6 +18,7 @@ export function ServiceRevealCard({
   href = "/quote",
   cta = "Request a Quote",
   tone = "#efe7db",
+  image,
 }: {
   title: string;
   line: string;
@@ -23,6 +26,7 @@ export function ServiceRevealCard({
   href?: string;
   cta?: string;
   tone?: string;
+  image?: { src: string; alt: string };
 }) {
   const [hovered, setHovered] = useState(false);
   const [clicked, setClicked] = useState(false);
@@ -35,10 +39,20 @@ export function ServiceRevealCard({
       className="flex flex-col overflow-hidden rounded-card border border-line bg-white shadow-card"
     >
       <div
-        className="relative flex aspect-[16/10] items-end p-4"
-        style={{ backgroundColor: tone }}
+        className="relative aspect-[16/10] overflow-hidden"
+        style={{ backgroundColor: image ? undefined : tone }}
       >
-        <span className="mono-meta text-navy-700/45">[ PHOTO ]</span>
+        {image ? (
+          <Image
+            src={image.src}
+            alt={image.alt}
+            fill
+            sizes="(min-width: 768px) 33vw, 100vw"
+            className="object-cover"
+          />
+        ) : (
+          <span className="mono-meta absolute bottom-4 left-4 text-navy-700/45">[ PHOTO ]</span>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col p-6 md:p-7">

@@ -67,6 +67,7 @@ export default function ResidentialPage() {
               "Photo report before we leave",
             ]}
             tone="#efe7db"
+            image={{ src: "/photos/signature-clean.jpg", alt: "A tidy, freshly cleaned living room" }}
           />
           <ServiceRevealCard
             title="Deep Clean"
@@ -77,6 +78,7 @@ export default function ResidentialPage() {
               "Brings the home to standard",
             ]}
             tone="#e9e4d8"
+            image={{ src: "/photos/deep-clean.jpg", alt: "A spotless kitchen brought to standard by a deep clean" }}
           />
           <ServiceRevealCard
             title="Move-In / Out"
@@ -87,6 +89,7 @@ export default function ResidentialPage() {
               "For owners, renters, and agents",
             ]}
             tone="#e6e9ea"
+            image={{ src: "/photos/move-in-out.jpg", alt: "An empty, move-ready home after a move-out clean" }}
           />
         </div>
       </Section>
