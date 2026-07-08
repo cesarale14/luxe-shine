@@ -6,7 +6,6 @@ import { PhotoFrame } from "@/components/blocks/PhotoFrame";
 import { TurnoverTimeline } from "@/components/blocks/TurnoverTimeline";
 import { FAQAccordion } from "@/components/blocks/FAQAccordion";
 import { CTABand } from "@/components/blocks/CTABand";
-import { PhotoPlaceholder } from "@/components/blocks/PhotoPlaceholder";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqSchema } from "@/lib/schema";
@@ -73,35 +72,18 @@ export default function StrTurnoversPage() {
         </p>
       </Section>
 
-      {/* We host too + owner + Host Partner */}
+      {/* Host Partner Program */}
       <Section bg="ivory">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-          <div>
-            <SectionHeading eyebrow="We host too" title="The crew we trust with our own." />
-            <p className="mt-6 max-w-xl text-[1.0625rem] leading-relaxed text-text md:text-lg">
-              &ldquo;I run my own rentals in Tampa. My name&rsquo;s on every clean.&rdquo;
-            </p>
-            <p className="mono-meta mt-3">
-              {/* TODO(launch): real owner name + on-site photo. */}[ OWNER NAME ]
-            </p>
-            <div className="mt-6 max-w-xs">
-              <PhotoPlaceholder label="OWNER — on-site, natural light" ratio="4 / 5" />
-            </div>
-          </div>
-          <div className="rounded-card border border-line bg-white p-8 shadow-card md:p-10">
-            <p className="eyebrow">Host Partner Program</p>
-            <h3 className="heading-3 mt-3">For managers with 5+ units.</h3>
-            <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted md:text-base">
-              Capped slots, priority scheduling, dedicated crews, unit-level reporting, and
-              one invoice. Priority only means something if the calendar has room to honor it.
-            </p>
-            <a
-              href="/quote"
-              className="link-cta mt-6 inline-flex"
-            >
-              Ask about availability
-            </a>
-          </div>
+        <div className="mx-auto max-w-2xl rounded-card border border-line bg-white p-8 shadow-card md:p-10">
+          <p className="eyebrow">Host Partner Program</p>
+          <h3 className="heading-3 mt-3">For managers with 5+ units.</h3>
+          <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted md:text-base">
+            Capped slots, priority scheduling, dedicated crews, unit-level reporting, and
+            one invoice. Priority only means something if the calendar has room to honor it.
+          </p>
+          <a href="/quote" className="link-cta mt-6 inline-flex">
+            Ask about availability
+          </a>
         </div>
       </Section>
 

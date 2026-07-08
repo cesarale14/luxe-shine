@@ -116,7 +116,7 @@ export default function ResidentialPage() {
         </div>
       </Section>
 
-      <CTABand heading="Start with a quote." sub="Flat-rate and in writing, from the owner." />
+      <CTABand heading="Start with a quote." />
 
       <JsonLd data={faqSchema(RESIDENTIAL_FAQS.slice(0, 4))} />
     </>
