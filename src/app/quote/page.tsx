@@ -22,7 +22,9 @@ export default function QuotePage() {
 
       <Section bg="white">
         <div className="mx-auto max-w-2xl">
-          <p className="mono-meta">Flat-rate quote · in writing · within 2 business hours.</p>
+          <p className="text-[0.9375rem] leading-relaxed text-muted">
+            You&rsquo;ll have a flat-rate quote in writing within 2 business hours.
+          </p>
           <div className="mt-6">
             <QuoteForm />
           </div>

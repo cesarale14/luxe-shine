@@ -16,7 +16,8 @@ import { SITE, OWNER_NOTIFICATION_IMPLEMENTED } from "@/content/site";
  * BACKEND — P0 LAUNCH BLOCKER: no real endpoint yet.
  * TODO(launch): POST {mode, zip, size|units, phone, source_page, ts} to the real quote
  *   notification pipeline (instant owner SMS), add per-IP rate limiting, and confirm
- *   end-to-end BEFORE the 2-business-hour SLA microline is production-safe.
+ *   end-to-end BEFORE the 2-business-hour SLA promise (success state + /quote) is
+ *   production-safe.
  */
 
 type Mode = "home" | "str";
@@ -243,7 +244,6 @@ export function QuoteCard({ sourcePage = "home" }: { sourcePage?: string }) {
               ? "Request a Quote"
               : "Request Turnover Quote"}
         </button>
-        <p className="mono-meta mt-4">Flat-rate · in writing · within 2 business hours</p>
       </form>
     </div>
   );

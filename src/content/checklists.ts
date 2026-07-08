@@ -62,7 +62,7 @@ export const RESIDENTIAL_CHECKLIST: ChecklistGroup[] = [
 ];
 
 export const RESIDENTIAL_ADDONS =
-  "Inside the refrigerator · inside the oven · interior windows · laundry and linens · garage or patio";
+  "Inside the refrigerator, inside the oven, interior windows, laundry and linens, and the garage or patio.";
 
 export const STR_CHECKLIST: ChecklistGroup[] = [
   {

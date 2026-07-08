@@ -106,7 +106,7 @@ export default function StandardPage() {
         </div>
       </Section>
 
-      <CTABand heading="Hold us to it." sub="Flat-rate quote, in writing, within 2 business hours." />
+      <CTABand heading="Hold us to it." sub="Flat-rate quote, in writing, from the owner." />
 
       <JsonLd data={faqSchema(OUR_STANDARD_FAQS)} />
     </>

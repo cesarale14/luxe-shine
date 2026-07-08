@@ -63,7 +63,9 @@ never fabricated. See `LAUNCH_BLOCKERS` and `isPlaceholder()` in `src/content/si
   `.lede`, `.mono-meta`.
 - **Content is centralized** in `src/content/` — `site.ts` (NAP, nav, policies,
   placeholders, SEO strings), `faqs.ts`, `checklists.ts`. Edit copy there, not in pages.
-- **Signature element:** `components/blocks/VerificationReportArtifact.tsx`.
+- **Real artifacts or nothing (v2.2):** never reconstruct an operational document (report
+  card, verification receipt) in the UI with sample data — a mocked report is fabricated
+  evidence. Proof = real reviews, gated on `>= 2` real entries, else the section is omitted.
 - **Quote form:** `components/quote/QuoteForm.tsx` — conditional home/STR branches, client
   validation, honeypot, success state, **placeholder submit handler (no backend yet)**.
 

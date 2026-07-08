@@ -3,12 +3,10 @@ import { Check, BedDouble, Package, Camera, Flag } from "lucide-react";
 import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/blocks/PageHero";
 import { TurnoverTimeline } from "@/components/blocks/TurnoverTimeline";
-import { VerificationReportArtifact } from "@/components/blocks/VerificationReportArtifact";
 import { FAQAccordion } from "@/components/blocks/FAQAccordion";
 import { CTABand } from "@/components/blocks/CTABand";
 import { PhotoPlaceholder } from "@/components/blocks/PhotoPlaceholder";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Reveal } from "@/components/ui/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqSchema } from "@/lib/schema";
 import { STR_FAQS } from "@/content/faqs";
@@ -48,7 +46,7 @@ export default function StrTurnoversPage() {
         </div>
       </Section>
 
-      {/* What a turn includes — chips + report card anchor */}
+      {/* What a turn includes — chips (describes the service in words, no simulated output) */}
       <Section bg="white">
         <SectionHeading eyebrow="Every turn" title="Five steps, one report." />
         <ul className="mt-8 flex flex-wrap gap-3">
@@ -62,12 +60,9 @@ export default function StrTurnoversPage() {
             </li>
           ))}
         </ul>
-        <div className="mt-12 flex flex-col items-center">
-          <Reveal className="w-full max-w-xl">
-            <VerificationReportArtifact variant="hero" />
-          </Reveal>
-          <p className="mono-meta mt-4 text-center">Sent before check-in, every time.</p>
-        </div>
+        <p className="mt-8 max-w-xl text-[0.9375rem] leading-relaxed text-muted">
+          A written report follows every turn before check-in.
+        </p>
       </Section>
 
       {/* We host too + owner + Host Partner */}

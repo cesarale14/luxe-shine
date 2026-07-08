@@ -3,15 +3,18 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * STR turnover timeline (v2 §7.4): a day-strip whose nodes advance sequentially on
- * enter — teaches same-day capability without a paragraph. Plays once.
+ * STR turnover timeline (v2 §7.4): a strip whose nodes advance sequentially on enter —
+ * teaches same-day capability without a paragraph. Plays once.
  * Reduced-motion → all nodes shown immediately.
+ *
+ * v2.2: schematic relative labels, no invented clock times (a fabricated "1:47" reads as
+ * a real job it never was). The sequence and animation stay; the false precision goes.
  */
 const NODES = [
-  { time: "10:00", label: "Guest out" },
-  { time: "10:20", label: "Crew in" },
-  { time: "1:47", label: "Report sent" },
-  { time: "4:00", label: "Guest in" },
+  { label: "Guest out" },
+  { label: "Crew in within the hour" },
+  { label: "Report before check-in" },
+  { label: "Guest in" },
 ];
 
 export function TurnoverTimeline() {
@@ -55,7 +58,7 @@ export function TurnoverTimeline() {
       <ol className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4">
         {NODES.map((n, i) => (
           <li
-            key={n.time}
+            key={n.label}
             className="transition-all ease-out-luxe"
             style={{
               opacity: shown ? 1 : 0,
@@ -69,8 +72,7 @@ export function TurnoverTimeline() {
                 i === NODES.length - 1 ? "border-palm bg-palm-tint" : "border-navy-700 bg-white"
               }`}
             />
-            <p className="mono-meta mt-4 text-navy-900">{n.time}</p>
-            <p className="mt-1 text-[0.9375rem] text-muted">{n.label}</p>
+            <p className="mt-4 text-[0.9375rem] font-medium text-navy-900">{n.label}</p>
           </li>
         ))}
       </ol>

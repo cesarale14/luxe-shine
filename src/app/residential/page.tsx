@@ -3,12 +3,10 @@ import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/blocks/PageHero";
 import { ServiceRevealCard } from "@/components/blocks/ServiceRevealCard";
 import { StepList } from "@/components/blocks/StepList";
-import { VerificationReportArtifact } from "@/components/blocks/VerificationReportArtifact";
 import { FAQAccordion } from "@/components/blocks/FAQAccordion";
 import { CTABand } from "@/components/blocks/CTABand";
 import { PhotoPlaceholder } from "@/components/blocks/PhotoPlaceholder";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Reveal } from "@/components/ui/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqSchema } from "@/lib/schema";
 import { RESIDENTIAL_FAQS } from "@/content/faqs";
@@ -86,18 +84,11 @@ export default function ResidentialPage() {
         </div>
       </Section>
 
-      {/* Mini schedule diagram + micro report card */}
+      {/* How it runs */}
       <Section bg="white">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-          <div>
-            <SectionHeading eyebrow="How it runs" title="Set once. Then it just happens." />
-            <div className="mt-10">
-              <StepList steps={SCHEDULE} variant="rows" />
-            </div>
-          </div>
-          <Reveal className="lg:pt-4">
-            <VerificationReportArtifact variant="compact" />
-          </Reveal>
+        <SectionHeading eyebrow="How it runs" title="Set once. Then it just happens." />
+        <div className="mt-10 max-w-2xl">
+          <StepList steps={SCHEDULE} variant="rows" />
         </div>
       </Section>
 
@@ -115,7 +106,7 @@ export default function ResidentialPage() {
         </div>
       </Section>
 
-      <CTABand heading="Start with a quote." sub="In writing, within 2 business hours." />
+      <CTABand heading="Start with a quote." sub="Flat-rate and in writing, from the owner." />
 
       <JsonLd data={faqSchema(RESIDENTIAL_FAQS.slice(0, 4))} />
     </>

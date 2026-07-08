@@ -133,7 +133,7 @@ export function Footer() {
         {/* Service area line */}
         <div className="mt-12 border-t border-white/10 pt-8">
           <p className="text-[0.8125rem] leading-relaxed text-ivory/55">
-            Serving {SERVICE_AREAS.join(" · ")}.
+            Serving {SERVICE_AREAS.join(", ")}.
           </p>
         </div>
 

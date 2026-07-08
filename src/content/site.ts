@@ -52,11 +52,11 @@ export const NAV: { label: string; href: string; cta?: boolean }[] = [
   { label: "Request a Quote", href: "/quote", cta: true },
 ];
 
-/** v2 facts line — typeset, once per page. No "photo-verified" phrase (§17). */
+/** Facts line — rendered as a plain sentence (v2.2 §3). No "photo-verified" phrase (§17). */
 export const FACTS = [
-  "Insured & bonded",
+  "Insured and bonded",
   "Background-checked crews",
-  "24-hour re-clean guarantee",
+  "Anything missed, re-cleaned free within 24 hours",
 ] as const;
 
 export const SERVICE_AREAS = [

@@ -3,14 +3,12 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { QuoteCard } from "@/components/quote/QuoteCard";
 import { PathPanels } from "@/components/blocks/PathPanels";
-import { VerificationReportArtifact } from "@/components/blocks/VerificationReportArtifact";
 import { ReviewsBlock } from "@/components/blocks/ReviewsBlock";
 import { FactsLine } from "@/components/blocks/FactsLine";
 import { CTABand } from "@/components/blocks/CTABand";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Reveal } from "@/components/ui/Reveal";
-import { SEO } from "@/content/site";
+import { SEO, REVIEWS } from "@/content/site";
 
 export const metadata: Metadata = {
   title: SEO.home.title,
@@ -44,28 +42,24 @@ export default function HomePage() {
         <PathPanels />
       </Section>
 
-      {/* 3 — Proof: reviews + report card artifact + facts line */}
-      <Section bg="ivory">
-        <SectionHeading eyebrow="Proof" title="Standing evidence." />
-        <div className="mt-10 grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
-          <ReviewsBlock />
-          <Reveal>
-            <VerificationReportArtifact variant="hero" />
-          </Reveal>
-        </div>
-        <div className="mt-12 flex flex-col items-center gap-4 border-t border-line pt-10 text-center">
-          <FactsLine />
-          <p className="text-[0.9375rem] text-navy-900">
-            Anything missed, we re-clean within 24 hours.{" "}
-            <span className="font-medium text-palm">Free.</span>
-          </p>
-        </div>
-      </Section>
+      {/* 3 — Proof: real reviews + facts sentence. Renders ONLY with >= 2 real reviews;
+             otherwise omitted entirely (v2.2 §4 — an absent section is honest). */}
+      {REVIEWS.length >= 2 && (
+        <Section bg="ivory">
+          <SectionHeading eyebrow="Proof" title="Standing evidence." />
+          <div className="mt-10">
+            <ReviewsBlock />
+          </div>
+          <div className="mt-12 border-t border-line pt-10 text-center">
+            <FactsLine className="mx-auto max-w-2xl" />
+          </div>
+        </Section>
+      )}
 
       {/* 4 — CTA band (button anchors to the hero card) */}
       <CTABand
         heading="Get your quote."
-        sub="Flat-rate · in writing · within 2 business hours."
+        sub="Flat-rate and in writing, straight from the owner."
         cta={{ label: "Request a Quote", href: "#quote-card" }}
       />
     </>
